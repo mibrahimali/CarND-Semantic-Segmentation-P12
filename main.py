@@ -178,28 +178,27 @@ def run():
         # Create function to get batches
         get_batches_fn = helper.gen_batch_function(os.path.join(data_dir, 'data_road/training'), image_shape)
 
-        with tf.Session() as sess:
-            # OPTIONAL: Augment Images for better results
-            #  https://datascience.stackexchange.com/questions/5224/how-to-prepare-augment-images-for-neural-network
+        # OPTIONAL: Augment Images for better results
+        #  https://datascience.stackexchange.com/questions/5224/how-to-prepare-augment-images-for-neural-network
 
-            # TODO: Build NN using load_vgg, layers, and optimize function
-            vgg_input_layer, vgg_keep_prob_layer, vgg_layer3_out, vgg_layer4_out, vgg_layer7_out = load_vgg(sess, vgg_path)
+        # TODO: Build NN using load_vgg, layers, and optimize function
+        vgg_input_layer, vgg_keep_prob_layer, vgg_layer3_out, vgg_layer4_out, vgg_layer7_out = load_vgg(sess, vgg_path)
 
-            out = layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes)
+        out = layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes)
 
-            correct_label = tf.placeholder(tf.int32, [None, None, None, num_classes], name='correct_label')
-            learning_rate = tf.placeholder(tf.float32, name='learning_rate')
+        correct_label = tf.placeholder(tf.int32, [None, None, None, num_classes], name='correct_label')
+        learning_rate = tf.placeholder(tf.float32, name='learning_rate')
 
-            logits, train_op, cross_entropy_loss = optimize(out, correct_label, learning_rate, num_classes)
+        logits, train_op, cross_entropy_loss = optimize(out, correct_label, learning_rate, num_classes)
 
-            # TODO: Train NN using the train_nn function
-            epochs = 1
-            batch_size = 1
+        # TODO: Train NN using the train_nn function
+        epochs = 50
+        batch_size = 5
 
-            train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_loss, vgg_input_layer,
-                     correct_label, vgg_keep_prob_layer, learning_rate)
-            # TODO: Save inference data using helper.save_inference_samples
-            helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob_layer, vgg_input_layer)
+        train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_loss, vgg_input_layer,
+                 correct_label, vgg_keep_prob_layer, learning_rate)
+        # TODO: Save inference data using helper.save_inference_samples
+        helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob_layer, vgg_input_layer)
 
         # OPTIONAL: Apply the trained model to a video
 
